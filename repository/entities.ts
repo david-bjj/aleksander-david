@@ -18,6 +18,29 @@ interface BookIssuesRequest {
     bookId: number;
 }
 
+interface BookIssueSuccessResponse {
+    success: true;
+    message: string;
+    issue: BookIssues;
+}
+
+interface BookIssueErrorResponse {
+    success: false;
+    error: string;
+}
+
+interface BookDeletionResponse {
+    message: string;
+    success: boolean;
+}
+
+interface MemberBookIssues {
+    member: Member;
+    books?: Book[];
+}
+
+type BookIssueResponse = BookIssueSuccessResponse | BookIssueErrorResponse;
+
 interface Member {
     memberId: number;
     name: string;
@@ -33,4 +56,15 @@ interface MemberRegisterRequest {
     address: string;
 }
 
-export { Book, BookIssues, BookIssuesRequest, Member, MemberRegisterRequest };
+export {
+    Book,
+    BookIssues,
+    BookIssuesRequest,
+    BookIssueResponse,
+    BookIssueSuccessResponse,
+    BookIssueErrorResponse,
+    Member,
+    MemberRegisterRequest,
+    MemberBookIssues,
+    BookDeletionResponse
+};
