@@ -12,10 +12,6 @@ To run:
 bun run index.ts
 ```
 
-You can find file for importing the request for testing the application that is called project-demo-requests.json
-
-Also some demo requests 
-
 // Create member
 http://localhost:3000/register
 {
@@ -57,7 +53,7 @@ http://localhost:3000/members/1/issues
 http://localhost:3000/issues/1
 
 // Create specific issue for a member with a given book
-http://localhost:3000/issues/1
+http://localhost:3000/issues
 
 {
     "memberId": 1,

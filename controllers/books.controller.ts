@@ -1,6 +1,6 @@
 import { Elysia, NotFoundError, t } from "elysia";
 import { getAllBooks, getBook, createBook } from "../repository/books.repository";
-import { Book } from "../repository/entities";
+import { Book } from "../repository/models";
 
 const allowedLanguages = ["English", "Arabic", "French", "German", "Spanish"];
 

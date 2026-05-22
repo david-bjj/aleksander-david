@@ -1,8 +1,7 @@
 import { Database } from "bun:sqlite";
-import { join } from "node:path";
-import { Member, MemberRegisterRequest } from "./entities";
+import { Member, MemberRegisterRequest } from "./models";
 
-export const db = new Database(join(import.meta.dir, "members.db"));
+export const db = new Database("members.db");
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS members (

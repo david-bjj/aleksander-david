@@ -1,5 +1,4 @@
 import { Database } from "bun:sqlite";
-import { join } from "node:path";
 import {
     BookIssueResponse,
     BookIssuesRequest,
@@ -7,7 +6,7 @@ import {
     IssuedBook,
     Member,
     BookDeletionResponse
-} from "./entities";
+} from "./models";
 import { getBook } from "./books.repository";
 import { getMember } from "./members.repository";
 import { NotFoundError } from "elysia";

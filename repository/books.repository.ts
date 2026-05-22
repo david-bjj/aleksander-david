@@ -1,5 +1,5 @@
 import { Database } from "bun:sqlite";
-import { Book, BookRequest } from "./entities";
+import { Book, BookRequest } from "./models";
 
 const db = new Database("books.db");
 

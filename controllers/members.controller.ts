@@ -1,6 +1,6 @@
 import { Elysia, NotFoundError, t } from "elysia";
 import { registerMember, getMembers, getMember } from "../repository/members.repository";
-import { Member } from "../repository/entities";
+import { Member } from "../repository/models";
 
 export const membersController = new Elysia()
     .post(

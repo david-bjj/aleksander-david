@@ -6,7 +6,7 @@ import {
     getAllIssues
 } from "../repository/book.issues.repository";
 import { getMember } from "../repository/members.repository";
-import { Member } from "../repository/entities";
+import { Member } from "../repository/models";
 
 export const issuesController = new Elysia()
     .group("/issues", (app) =>
