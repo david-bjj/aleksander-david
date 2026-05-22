@@ -25,9 +25,9 @@ export const booksController = new Elysia()
     },
         {
             body: t.Object({
-                title: t.String(),
-                subject: t.String(),
-                author: t.String(),
+                title: t.String({ minLength: 2 }),
+                subject: t.String({ minLength: 2 }),
+                author: t.String({ minLength: 3 }),
                 language: t.String(),
             })
         }
