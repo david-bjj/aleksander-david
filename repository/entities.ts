@@ -6,6 +6,13 @@ interface Book {
     language: string;
 }
 
+interface BookRequest {
+    title: string;
+    subject: string;
+    author: string;
+    language: string;
+}
+
 interface BookIssues {
     issueId: number;
     memberId: number;
@@ -58,6 +65,7 @@ interface MemberRegisterRequest {
 
 export {
     Book,
+    BookRequest,
     BookIssues,
     BookIssuesRequest,
     BookIssueResponse,

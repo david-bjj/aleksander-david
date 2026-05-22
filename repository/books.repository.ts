@@ -1,5 +1,5 @@
 import { Database } from "bun:sqlite";
-import { Book } from "./entities";
+import { Book, BookRequest } from "./entities";
 
 const db = new Database("books.db");
 
@@ -14,16 +14,13 @@ db.exec(`
 `);
 
 
-function createBook(book: Book): Book {
+function createBook(book: BookRequest): Book {
     const stmt = db.prepare("INSERT INTO books (title, subject, author, language) VALUES (?, ?, ?, ?)");
-    stmt.run(book.title, book.subject, book.author, book.language);
+    const result = stmt.run(book.title, book.subject, book.author, book.language);
     return {
-        bookId: book.bookId,
-        title: book.title,
-        subject: book.subject,
-        author: book.author,
-        language: book.language
-    }
+        bookId: Number(result.lastInsertRowid),
+        ...book,
+    };
 }
 
 function getAllBooks(): Book[] {
