@@ -18,4 +18,19 @@ interface BookIssuesRequest {
     bookId: number;
 }
 
-export { Book, BookIssues, BookIssuesRequest };
+interface Member {
+    memberId: number;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+}
+
+interface MemberRegisterRequest {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+}
+
+export { Book, BookIssues, BookIssuesRequest, Member, MemberRegisterRequest };
