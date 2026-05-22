@@ -10,12 +10,12 @@ export const booksController = new Elysia()
     return getAllBooks();
 })
 
-.get("/books/:bookId", ({params} : number): Book => {
-    const result = getBook(params.bookId);
+.get("/books/:bookId", ({params}): Book => {
+    const result = getBook(parseInt(params.bookId));
     if (!result) {
         throw new NotFoundError(`Book with id ${params.bookId} not found`);
     }
-    return getBook(params.bookId);
+    return result;
 })
 
 .post("/books", ({ body }) => {
