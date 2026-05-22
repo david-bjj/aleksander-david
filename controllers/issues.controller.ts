@@ -9,7 +9,7 @@ import { getMember } from "../repository/members.repository";
 import { Member } from "../repository/entities";
 
 export const issuesController = new Elysia()
-    .group("/issue", (app) =>
+    .group("/issues", (app) =>
         app
             .post(
                 "/",
