@@ -31,7 +31,7 @@ function getAllBooks(): Book[] {
     return stmt.all();
 }
 
-function getBookById(bookId: number): Book {
+function getBook(bookId: number): Book {
     const stmt = db.prepare("SELECT * FROM books WHERE bookId = ?");
     const result = stmt.get(bookId);
     if (!result) {
@@ -39,3 +39,5 @@ function getBookById(bookId: number): Book {
     }
     return stmt.get(bookId);
 }
+
+export { getBook };

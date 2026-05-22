@@ -1,5 +1,7 @@
 import { Database } from "bun:sqlite";
 import { BookIssuesRequest, BookIssues, Member, Book } from "./entities";
+import { getMember } from "./members.repository";
+import { getBook } from "./books.repository";
 
 const db = new Database("book-issues.db");
 
@@ -25,10 +27,8 @@ db.exec(`
 
 
 function issueBook(issueRequest: BookIssuesRequest): BookIssuesResponse {
-    const memberCheck = db.prepare("SELECT * FROM members WHERE memberId = ?");
-    const memberCheckResult = memberCheck.get(issueRequest.memberId);
-    const bookCheck = db.prepare("SELECT * FROM books WHERE bookId = ?");
-    const bookCheckResult = bookCheck.get(issueRequest.bookId);
+    const memberCheckResult = getMember(issueRequest.memberId);
+    const bookCheckResult = getBook(issueRequest.bookId);
     if (!memberCheckResult || !bookCheckResult) {
         return {
             success: false,
@@ -71,17 +71,18 @@ function getAllIssuedBooks(): MemberBookIssues[] {
     const memberIds: number[] = stmt.all();
     let memberBookIssuesList: MemberBookIssues[] = [];
     for(const memberId of memberIds) {
-        const getMemberStmt = db.prepare("SELECT * FROM members WHERE memberId = ?");
-        const member: Member = getMemberStmt.get(memberId);
+        const member: Member | null = getMember(memberId);
         const getBookIssuesStmt = db.prepare("SELECT bookId FROM bookIssues WHERE memberId = ?");
         const bookIssueIds: number[] = getBookIssuesStmt.get(memberId);
+        if (!member) {
+            throw new Error(`Member with id ${memberId} not found`);
+        }
         let memberBookIssues: MemberBookIssues = {
             member: member,
             books: []
         };
         for (const bookIssueId of bookIssueIds) {
-            const getBookStmt = db.prepare("SELECT * FROM books WHERE bookId = ?");
-            const book: Book = getBookStmt.get(bookIssueId);
+            const book: Book = getBook(bookIssueId);
             memberBookIssues.books?.push(book);
         }
         memberBookIssuesList.push(memberBookIssues);
@@ -90,8 +91,10 @@ function getAllIssuedBooks(): MemberBookIssues[] {
 }
 
 function getIssuesByMember(memberId: number): MemberBookIssues {
-    const memberSelectStmt = db.prepare("SELECT * FROM members WHERE memberId = ?");
-    const member: Member = memberSelectStmt.get(memberId);
+    const member: Member | null = getMember(memberId);
+    if (!member) {
+        throw new Error(`Member with id ${memberId} not found`);
+    }
     const selectBookIssuesStmt = db.prepare("SELECT bookId FROM bookIssues WHERE memberId = ?");
     const bookIssues: number[] = selectBookIssuesStmt.all(memberId);
     let memberBookIssues: MemberBookIssues = {
@@ -99,9 +102,24 @@ function getIssuesByMember(memberId: number): MemberBookIssues {
         books: []
     };
     for (const bookIssue of bookIssues) {
-        const bookSelectStmt = db.prepare("SELECT * FROM books WHERE bookId = ?");
-        const book: Book = bookSelectStmt.get(bookIssue);
+        const book: Book = getBook(bookIssue);
         memberBookIssues.books?.push(book);
     }
     return memberBookIssues;
+}
+
+function deleteBookIssue(issueId: number): BookIssuesResponse {
+    const deleteStmt = db.prepare("DELETE FROM bookIssues WHERE issueId = ?");
+    const result = deleteStmt.run(issueId);
+    if (result.changes > 0) {
+        return {
+            success: true,
+            message: "Book issue deleted successfully"
+        };
+    } else {
+    return {
+        success: false,
+        message: `Book issue with id ${issueId} not found`
+        };
+    }
 }
