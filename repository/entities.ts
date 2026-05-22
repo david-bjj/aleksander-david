@@ -41,9 +41,14 @@ interface BookDeletionResponse {
     success: boolean;
 }
 
+interface IssuedBook extends Book {
+    issueId: number;
+    issueDate: string;
+}
+
 interface MemberBookIssues {
     member: Member;
-    books?: Book[];
+    books?: IssuedBook[];
 }
 
 type BookIssueResponse = BookIssueSuccessResponse | BookIssueErrorResponse;
@@ -74,5 +79,6 @@ export {
     Member,
     MemberRegisterRequest,
     MemberBookIssues,
+    IssuedBook,
     BookDeletionResponse
 };

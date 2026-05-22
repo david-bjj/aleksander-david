@@ -15,7 +15,7 @@ export const membersController = new Elysia()
             }),
         },
     )
-    .group("/member", (app) =>
+    .group("/members", (app) =>
         app
             .get("/", (): Member[] => getMembers())
             .get(

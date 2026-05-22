@@ -1,14 +1,16 @@
 import { Database } from "bun:sqlite";
+import { join } from "node:path";
 import {
     BookIssueResponse,
     BookIssuesRequest,
     MemberBookIssues,
-    Book,
+    IssuedBook,
     Member,
     BookDeletionResponse
 } from "./entities";
 import { getBook } from "./books.repository";
 import { getMember } from "./members.repository";
+import { NotFoundError } from "elysia";
 
 const db = new Database("book-issues.db");
 
@@ -33,9 +35,8 @@ const insertIssueStatement = db.prepare(
     "INSERT INTO bookIssues (memberId, bookId, issueDate) VALUES (?, ?, ?)",
 );
 
-const getBookIdsByMemberStatement = db.prepare<{ bookId: number }, [number]>(
-    "SELECT bookId FROM bookIssues WHERE memberId = ?",
-);
+const getIssuesByMemberStatement = db.prepare<{ issueId: number; bookId: number; issueDate: string }, [number]>
+("SELECT issueId, bookId, issueDate FROM bookIssues WHERE memberId = ?");
 
 const getDistinctMemberIdsStatement = db.prepare<{ memberId: number }, []>(
     "SELECT DISTINCT memberId FROM bookIssues",
@@ -104,10 +105,18 @@ export function getAllIssues(): MemberBookIssues[] {
 }
 
 export function getIssuesByMember(member: Member): MemberBookIssues {
-    const bookIds = getBookIdsByMemberStatement.all(member.memberId);
-    const books = bookIds
-        .map((row) => getBook(row.bookId))
-        .filter((book): book is Book => book !== null);
+    const issues = getIssuesByMemberStatement.all(member.memberId);
+    const books = issues
+        .map((row): IssuedBook | null => {
+            const book = getBook(row.bookId);
+
+            if (!book) {
+                throw new NotFoundError(`Book with ${row.bookId} not found`);
+            } 
+
+            return { ...book, issueId: row.issueId, issueDate: row.issueDate };
+        })
+        .filter((book): book is IssuedBook => book !== null);
     return {
         member,
         books,

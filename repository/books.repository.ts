@@ -13,7 +13,6 @@ db.exec(`
     )
 `);
 
-
 function createBook(book: BookRequest): Book {
     const stmt = db.prepare("INSERT INTO books (title, subject, author, language) VALUES (?, ?, ?, ?)");
     const result = stmt.run(book.title, book.subject, book.author, book.language);
