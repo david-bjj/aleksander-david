@@ -33,11 +33,7 @@ function getAllBooks(): Book[] {
 
 function getBook(bookId: number): Book {
     const stmt = db.prepare("SELECT * FROM books WHERE bookId = ?");
-    const result = stmt.get(bookId);
-    if (!result) {
-        throw new Error(`Book with id ${bookId} not found`);
-    }
     return stmt.get(bookId);
 }
 
-export { getBook };
+export { getBook, getAllBooks, createBook };
