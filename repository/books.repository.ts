@@ -27,22 +27,19 @@ function createBook(book: Book): Book {
 }
 
 function getAllBooks(): Book[] {
-    const stmt = db.prepare("SELECT * FROM books");
-    return stmt.all();
+    return getBooksStatement.all();
 }
 
-<<<<<<< Updated upstream
-function getBook(bookId: number): Book {
-    const stmt = db.prepare("SELECT * FROM books WHERE bookId = ?");
-    return stmt.get(bookId);
-=======
+const getBooksStatement = db.prepare<Book, []>(
+    "SELECT * FROM books",
+)
+
 const getBookStatement = db.prepare<Book, [number]>(
     "SELECT * FROM books WHERE bookId = ?",
 );
 
 export function getBook(bookId: number): Book | null {
     return getBookStatement.get(bookId);
->>>>>>> Stashed changes
 }
 
-export { getBook, getAllBooks, createBook };
+export { getAllBooks, createBook };
