@@ -1,9 +1,4 @@
 import { Database } from "bun:sqlite";
-<<<<<<< Updated upstream
-import { BookIssuesRequest, BookIssues, Member, Book } from "./entities";
-import { getMember } from "./members.repository";
-import { getBook } from "./books.repository";
-=======
 import {
     BookIssueResponse,
     BookIssuesRequest,
@@ -14,7 +9,6 @@ import {
 } from "./entities";
 import { getBook } from "./books.repository";
 import { getMember } from "./members.repository";
->>>>>>> Stashed changes
 
 const db = new Database("book-issues.db");
 
@@ -31,12 +25,6 @@ const countMemberIssuesStatement = db.prepare<{ count: number }, [number]>(
     "SELECT COUNT(*) as count FROM bookIssues WHERE memberId = ?",
 );
 
-<<<<<<< Updated upstream
-function issueBook(issueRequest: BookIssuesRequest): BookIssuesResponse {
-    const memberCheckResult = getMember(issueRequest.memberId);
-    const bookCheckResult = getBook(issueRequest.bookId);
-    if (!memberCheckResult || !bookCheckResult) {
-=======
 const getIssueByBookIdStatement = db.prepare(
     "SELECT issueId FROM bookIssues WHERE bookId = ?",
 );
@@ -59,7 +47,6 @@ function currentIssueDate(): string {
 
 export function issueBook(request: BookIssuesRequest): BookIssueResponse {
     if (!getMember(request.memberId) || !getBook(request.bookId)) {
->>>>>>> Stashed changes
         return {
             success: false,
             error: "Invalid memberId or bookId",
@@ -91,61 +78,6 @@ export function issueBook(request: BookIssuesRequest): BookIssueResponse {
 
     return {
         success: true,
-<<<<<<< Updated upstream
-        message: "Book issued successfully",
-        data: {
-            issueId: result.issueId,
-            memberId: result.memberId,
-            bookId: result.bookId,
-            issueDate: currentDate
-        }
-    }
-}
-
-function getAllIssuedBooks(): MemberBookIssues[] {
-    const stmt = db.prepare("SELECT memberId FROM bookIssues");
-    const memberIds: number[] = stmt.all();
-    let memberBookIssuesList: MemberBookIssues[] = [];
-    for(const memberId of memberIds) {
-        const member: Member | null = getMember(memberId);
-        const getBookIssuesStmt = db.prepare("SELECT bookId FROM bookIssues WHERE memberId = ?");
-        const bookIssueIds: number[] = getBookIssuesStmt.get(memberId);
-        if (!member) {
-            throw new Error(`Member with id ${memberId} not found`);
-        }
-        let memberBookIssues: MemberBookIssues = {
-            member: member,
-            books: []
-        };
-        for (const bookIssueId of bookIssueIds) {
-            const book: Book = getBook(bookIssueId);
-            memberBookIssues.books?.push(book);
-        }
-        memberBookIssuesList.push(memberBookIssues);
-    }
-    return memberBookIssuesList;
-}
-
-function getIssuesByMember(memberId: number): MemberBookIssues {
-    const member: Member | null = getMember(memberId);
-    if (!member) {
-        throw new Error(`Member with id ${memberId} not found`);
-    }
-    const selectBookIssuesStmt = db.prepare("SELECT bookId FROM bookIssues WHERE memberId = ?");
-    const bookIssues: number[] = selectBookIssuesStmt.all(memberId);
-    let memberBookIssues: MemberBookIssues = {
-        member: member,
-        books: []
-    };
-    for (const bookIssue of bookIssues) {
-        const book: Book = getBook(bookIssue);
-        memberBookIssues.books?.push(book);
-    }
-    return memberBookIssues;
-}
-
-function deleteBookIssue(issueId: number): BookIssuesResponse {
-=======
         message: "book issue successfully",
         issue: {
             issueId: Number(result.lastInsertRowid),
@@ -183,7 +115,6 @@ export function getIssuesByMember(member: Member): MemberBookIssues {
 }
 
 export function deleteBookIssue(issueId: number): BookDeletionResponse {
->>>>>>> Stashed changes
     const deleteStmt = db.prepare("DELETE FROM bookIssues WHERE issueId = ?");
     const result = deleteStmt.run(issueId);
     if (result.changes > 0) {
@@ -192,18 +123,9 @@ export function deleteBookIssue(issueId: number): BookDeletionResponse {
             message: "Book issue deleted successfully"
         };
     } else {
-<<<<<<< Updated upstream
-    return {
-        success: false,
-        message: `Book issue with id ${issueId} not found`
-        };
-    }
-}
-=======
         return {
             success: false,
             message: `Book issue with id ${issueId} not found`
         };
     }
 }
->>>>>>> Stashed changes
